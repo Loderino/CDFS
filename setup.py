@@ -8,7 +8,9 @@ setup(
         "faiss-cpu==1.9.0.post1",
         "fasttext==0.9.3",
         "numpy==2.1.3",
-        "scikit-learn==1.5.2"
+        "python-magic==0.4.27"
+        "scikit-learn==1.5.2",
+        "watchdog==6.0.0"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

@@ -7,9 +7,11 @@ setup(
     install_requires=[
         "faiss-cpu==1.9.0.post1",
         "fasttext==0.9.3",
-        "numpy==2.1.3",
-        "python-magic==0.4.27"
+        "numpy==1.26.4",
+        "pillow==10.4.0",
+        "python-magic==0.4.27",
         "scikit-learn==1.5.2",
+        "tensorflow==2.17.0",
         "watchdog==6.0.0"
     ],
     classifiers=[

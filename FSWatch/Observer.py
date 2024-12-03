@@ -1,3 +1,5 @@
+import os
+from pathlib import Path
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
@@ -33,6 +35,15 @@ class FileSystemWatcher:
         self.observer = Observer()
         self.observer.schedule(DirectoryEventHandler(notice_method), TRACKED_DIRECTORY, recursive=True)
         self.observer.start()
+
+    def get_current_files(self):
+        file_list = []
+        for root, _, files in os.walk(TRACKED_DIRECTORY):
+            for file in files:
+                file_path = Path(os.path.join(root, file)).absolute()
+                file_list.append(file_path)
+        return list(filter(is_image, file_list))
+
 
     def __del__(self):
         self.observer.stop()

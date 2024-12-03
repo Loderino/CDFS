@@ -1,6 +1,7 @@
 venv/
 *.egg-info/
 __pycache__/
+models/
 
 *.gz
 *.faiss

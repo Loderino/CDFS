@@ -14,8 +14,16 @@ class DBHandler:
             self.db.connect()    
     def new_file(self, full_path, file_id=None):
         if file_id:
-            File.update(id=file_id, full_path=full_path)
-        File.create(full_path=full_path)
+            file, created = File.get_or_create(
+                id=file_id,
+                defaults={'full_path': full_path}
+            )
+            if not created:
+                file.full_path = full_path
+                file.save()
+        else:
+            file, created = File.get_or_create(full_path=full_path)
+        return file.id if created else None
 
     def delete_file(self, full_path):
         try:

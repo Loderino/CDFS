@@ -1,0 +1,4 @@
+{
+    "ru_vec_model_path": "models/cc.ru.300.bin",
+    "index_path": "data/index.faiss"
+}

@@ -1,0 +1,8 @@
+venv/
+*.egg-info/
+__pycache__/
+
+*.gz
+*.faiss
+*.h5
+*.bin

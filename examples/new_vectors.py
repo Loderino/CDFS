@@ -1,10 +1,10 @@
 import numpy as np
 from sklearn.preprocessing import normalize
 
-from DbManage.db_handler import DbHandler
+from DbManage.vdb_handler import VDBHandler
 from ImageHandle.vectorizer import Vectorizer
 
-db_handler = DbHandler()
+db_handler = VDBHandler()
 vectorizer = Vectorizer()
 
 tags_packets = [

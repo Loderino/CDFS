@@ -8,12 +8,27 @@ from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from constants import IMAGE_TAGGER_MODEL_PATH, IMAGE_TAGGER_TOKENIZER_PATH
 
 class Tagger:
+    """
+    Singleton class for generating text descriptions of images using a trained Keras model.
+
+    Attributes:
+        _instance (Tagger): The single instance of the class.
+        model (tf.keras.Model): The Keras model for generating text descriptions of images.
+        tokenizer (tf.keras.preprocessing.text.Tokenizer): The tokenizer for encoding words.
+        vocab_size (int): The size of the vocabulary.
+    """
+
     _instance = None
     model = None
     tokenizer = None
     vocab_size = None
 
-    def __new__(cls):
+    def __new__(cls) -> 'Tagger':
+        """Creates a new instance of the class.
+
+        Returns:
+            The single instance of the class.
+        """
         if cls._instance is None:
             cls._instance = super(Tagger, cls).__new__(cls)
             cls.model = load_model(IMAGE_TAGGER_MODEL_PATH)
@@ -24,7 +39,15 @@ class Tagger:
 
         return cls._instance
     
-    def generate_desc(self, image_path):
+    def generate_desc(self, image_path: str) -> list[str]:
+        """Generates a text description of an image.
+
+        Args:
+            image_path (str): The path to the image.
+
+        Returns:
+            List[str]: The text description of the image.
+        """
         photo = load_img(image_path, target_size=(512, 512))
         photo = img_to_array(photo)
         photo = np.expand_dims(photo, axis=0)

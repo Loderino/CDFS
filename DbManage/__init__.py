@@ -1,4 +1,3 @@
-import os
 from peewee import SqliteDatabase
 
 from constants import DB_PATH

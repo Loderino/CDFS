@@ -22,3 +22,29 @@ class VDBHandler:
 
     def __del__(self):
         faiss.write_index(self.index, INDEX_PATH)
+
+    def clear_index(self):
+        d = self.index.d
+        del self.index
+        self.index = faiss.IndexIDMap(faiss.IndexFlatL2(d))
+        if Path(INDEX_PATH).exists():
+            Path(INDEX_PATH).unlink()        
+
+    def get_all_vectors(self):
+        n = self.index.ntotal
+        d = self.index.d
+
+        base_index = getattr(self.index, 'index', self.index)
+
+        all_vectors = np.empty((n, d), dtype='float32')
+        all_ids = np.arange(n)
+
+        if hasattr(base_index, 'xb'):
+            all_vectors = base_index.xb
+        elif hasattr(base_index, 'reconstruct_n'):
+            all_vectors = base_index.reconstruct_n(0, n)
+        else:
+            dummy_query = np.zeros((1, d), dtype='float32')
+            _, all_vectors = self.index.search(dummy_query, n)
+
+        return all_vectors, all_ids

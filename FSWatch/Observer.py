@@ -34,7 +34,10 @@ class FileSystemWatcher:
     def __init__(self, notice_method):
         self.observer = Observer()
         self.observer.schedule(DirectoryEventHandler(notice_method), TRACKED_DIRECTORY, recursive=True)
-        self.observer.start()
+        try:
+            self.observer.start()
+        except FileNotFoundError:
+            exit(1)
 
     def get_current_files(self):
         file_list = []

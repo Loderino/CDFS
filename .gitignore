@@ -2,9 +2,12 @@ venv/
 *.egg-info/
 __pycache__/
 models/
+test_folder/
 
 *.gz
 *.faiss
 *.h5
 *.bin
 *.db
+*.txt
+*.ipynb

@@ -1,14 +1,12 @@
-import numpy as np
 from pathlib import Path
 from PIL import Image
-from sklearn.preprocessing import normalize
 
 from DbManage.db_handler import DBHandler
 from DbManage.vdb_handler import VDBHandler
 from FSWatch.models import EventType
 from FSWatch.Observer import FileSystemWatcher
 from ImageHandle.tagger import Tagger
-from ImageHandle.vectorizer import Vectorizer
+from VectorHandle.vectorizer import Vectorizer
 
 Image.MAX_IMAGE_PIXELS = None
 
@@ -23,9 +21,9 @@ def notice_method(event_type, src_path, dest_path):
         print(f"запись о файле {Path(src_path).absolute()} создана с id {file_id}")
         if file_id:
             tags = tagger.generate_desc(src_path)
-            file_vector = np.mean([v.get_vector(tag) for tag in tags], axis=0)
-            normalized_vector = normalize(file_vector.reshape(1, -1))[0]
-            vdbh.add_vector(file_id, normalized_vector)
+            file_vector = v.get_set_vector(tags, aggregation_method="mean")
+            file_vector.normalize()
+            vdbh.add_vector(file_id, file_vector.value)
     elif event_type == EventType.DELETED:
         file_id = dbh.delete_file(Path(src_path).absolute())
         if file_id:
@@ -35,9 +33,9 @@ def notice_method(event_type, src_path, dest_path):
         file_id = dbh.update_file(Path(src_path).absolute(), Path(dest_path).absolute())
         vdbh.remove_vector(file_id)
         tags = tagger.generate_desc(src_path)
-        file_vector = np.mean([v.get_vector(tag) for tag in tags], axis=0)
-        normalized_vector = normalize(file_vector.reshape(1, -1))[0]
-        vdbh.add_vector(file_id, normalized_vector)
+        file_vector = v.get_set_vector(tags, aggregation_method="mean")
+        file_vector.normalize()
+        vdbh.add_vector(file_id, file_vector.value)
         print(f"запись о файле {Path(src_path).absolute()} изменена")
     elif event_type == EventType.MOVED:
         dbh.update_file(Path(src_path).absolute(), Path(dest_path).absolute())
@@ -52,9 +50,9 @@ for ind,file in enumerate(fw.get_current_files()):
         tags = tagger.generate_desc(file)
         if not tags:
             tags = ["loss"]
-        file_vector = np.mean([v.get_vector(tag) for tag in tags], axis=0)
-        normalized_vector = normalize(file_vector.reshape(1, -1))[0]
-        vdbh.add_vector(file_id, normalized_vector)
+        file_vector = v.get_set_vector(tags, aggregation_method="mean")
+        file_vector.normalize()
+        vdbh.add_vector(file_id, file_vector.value)
     if ind >= 300:# для быстрого тестирования
         break
 
@@ -63,9 +61,9 @@ try:
         tags = input("Введите теги через пробел: ").split()
         if not tags:
             continue
-        file_vector = np.mean([v.get_vector(tag) for tag in tags], axis=0)
-        normalized_vector = normalize(file_vector.reshape(1, -1))[0]
-        destiny, ids = vdbh.search_nearest(normalized_vector, 5)
+        file_vector = v.get_set_vector(tags, aggregation_method="mean")
+        file_vector.normalize()
+        destiny, ids = vdbh.search_nearest(file_vector.value, 5)
         for file_id in ids:
             print(dbh.get_filepath_by_id(file_id))
 except (KeyboardInterrupt, EOFError):

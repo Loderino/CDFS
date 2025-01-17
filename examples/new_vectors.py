@@ -1,8 +1,5 @@
-import numpy as np
-from sklearn.preprocessing import normalize
-
 from DbManage.vdb_handler import VDBHandler
-from ImageHandle.vectorizer import Vectorizer
+from VectorHandle.vectorizer import Vectorizer
 
 db_handler = VDBHandler()
 vectorizer = Vectorizer()
@@ -14,6 +11,6 @@ tags_packets = [
 ]
 
 for i, tags in enumerate(tags_packets):
-    file_vector = np.mean([vectorizer.get_vector(tag) for tag in tags], axis=0)
-    normalized_vector = normalize(file_vector.reshape(1, -1))[0]
-    db_handler.add_vector(i, normalized_vector)
+    file_vector = vectorizer.get_set_vector(tags, aggregation_method="mean")
+    file_vector.normalize()
+    db_handler.add_vector(i, file_vector.value)

@@ -5,6 +5,7 @@ __pycache__/
 models/
 test_folder/
 
+research.md
 *.gz
 *.faiss
 *.h5

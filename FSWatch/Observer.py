@@ -38,7 +38,7 @@ class DirectoryEventHandler(FileSystemEventHandler):
         Args:
             event (FileSystemEvent): The event object containing event information.
         """
-        if self.is_correct_file_type(event.src_path):
+        if self.is_correct_file_type(event.src_path) and event.dest_path:
             self.notice_method(EventType.MODIFIED, event.src_path, event.dest_path)
 
     def on_created(self, event: FileSystemEvent) -> None:

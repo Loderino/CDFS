@@ -21,19 +21,27 @@ def notice_method(event_type, src_path, dest_path):
     if event_type == EventType.CREATED:
         file_id = dbh.new_file(Path(src_path).absolute())
         print(f"запись о файле {Path(src_path).absolute()} создана с id {file_id}")
+        if file_id:
+            tags = tagger.generate_desc(src_path)
+            file_vector = np.mean([v.get_vector(tag) for tag in tags], axis=0)
+            normalized_vector = normalize(file_vector.reshape(1, -1))[0]
+            vdbh.add_vector(file_id, normalized_vector)
+    elif event_type == EventType.DELETED:
+        file_id = dbh.delete_file(Path(src_path).absolute())
+        if file_id:
+            vdbh.remove_vector(file_id)
+            print(f"запись о файле {Path(src_path).absolute()} удалена")
+    elif event_type == EventType.MODIFIED:
+        file_id = dbh.update_file(Path(src_path).absolute(), Path(dest_path).absolute())
+        vdbh.remove_vector(file_id)
         tags = tagger.generate_desc(src_path)
         file_vector = np.mean([v.get_vector(tag) for tag in tags], axis=0)
         normalized_vector = normalize(file_vector.reshape(1, -1))[0]
         vdbh.add_vector(file_id, normalized_vector)
-    # elif event_type == EventType.DELETED:
-    #     dbh.delete_file(Path(src_path).absolute())
-    #     print(f"запись о файле {Path(src_path).absolute()} удалена")
-    # elif event_type == EventType.MODIFIED:
-    #     dbh.update_file(Path(src_path).absolute(), Path(dest_path).absolute())
-    #     print(f"запись о файле {Path(src_path).absolute()} изменена")
-    # elif event_type == EventType.MOVED:
-    #     dbh.update_file(Path(src_path).absolute(), Path(dest_path).absolute())
-    #     print(f"запись о файле {Path(src_path).absolute()} перемещена")
+        print(f"запись о файле {Path(src_path).absolute()} изменена")
+    elif event_type == EventType.MOVED:
+        dbh.update_file(Path(src_path).absolute(), Path(dest_path).absolute())
+        print(f"запись о файле {Path(src_path).absolute()} перемещена")
 
 fw = FileSystemWatcher(notice_method)
 
@@ -59,6 +67,6 @@ try:
         normalized_vector = normalize(file_vector.reshape(1, -1))[0]
         destiny, ids = vdbh.search_nearest(normalized_vector, 5)
         for file_id in ids:
-            print(dbh.get_filepath_by_id(file_id+1))
+            print(dbh.get_filepath_by_id(file_id))
 except (KeyboardInterrupt, EOFError):
     del vdbh

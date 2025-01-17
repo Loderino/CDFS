@@ -36,6 +36,15 @@ class VDBHandler:
         """
         self.index.add_with_ids(vector.reshape(1, -1), np.array([vector_id], dtype='int64'))
 
+    def remove_vector(self, vector_id: int) -> None:
+        """
+        Removes a vector from the index.
+
+        Args:
+            vector_id (int): The ID of the vector to remove.
+        """
+        self.index.remove_ids(np.array([vector_id], dtype='int64'))
+
     def search_nearest(self, query_vector: np.ndarray, k: int) -> tuple[np.ndarray, np.ndarray]:
         """
         Searches for the nearest vectors to a query vector.

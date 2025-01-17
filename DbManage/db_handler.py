@@ -54,15 +54,20 @@ class DBHandler:
         except File.DoesNotExist:
             return None
 
-    def update_file(self, old_path: str, new_path: str) -> None:
+    def update_file(self, old_path: str, new_path: str) -> int:
         """
         Updates the file path in the database.
 
         Args:
             old_path (str): The current path of the file.
             new_path (str): The new path to update the file to.
+
+        Returns:
+            int: ID of updated file.
         """
+        file_id = File.select(File.id).where(File.full_path == old_path).get().id
         File.update(full_path=new_path).where(File.full_path == old_path).execute()
+        return file_id
 
     def get_filepath_by_id(self, file_id: int) -> str | None:
         """

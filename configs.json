@@ -1,6 +1,6 @@
 {
-    "tracked_directory": "../image_tagger/images/",
-    "ru_vec_model_path": "models/cc.ru.300.bin",
+    "tracked_directory": "./test_folder/",
+    "ru_vec_model_path": "./models/cc.ru.300.bin",
     "image_tagger_model_path": "../image_tagger/models/16_12_2024.keras",
     "image_tagger_tokenizer_path": "../image_tagger/models/16_12_2024.json",
     "index_path": "data/index.faiss",

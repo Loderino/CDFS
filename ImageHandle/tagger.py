@@ -56,4 +56,5 @@ class Tagger:
         sequence = [self.tokenizer.word_index['start']]
         sequence_input = np.array([sequence[-1]])
         result = np.argmax(self.model.predict([photo, sequence_input], verbose=0), axis=-1)
-        return [self.tokenizer.index_word.get(token) for token in filter(None, result[0])]
+        return list(map(lambda tag: tag.replace("§", " "), [self.tokenizer.index_word.get(token) for token in filter(None, result[0])]))
+

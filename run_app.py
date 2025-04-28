@@ -89,18 +89,18 @@ for ind, file in enumerate(fw.get_current_files()):
         tags = tagger.generate_desc(file)
         if not tags:
             tags = ["loss"]
-        file_vector = v.get_set_vector(tags, aggregation_method="mean")
+        file_vector = v.get_set_vector(tags, aggregation_method="mean", weigh=True)
         file_vector.normalize()
         vdbh.add_vector(file_id, file_vector.value)
-    if ind >= 300:# для быстрого тестирования
-        break
+    # if ind >= 300:# для быстрого тестирования
+    #     break
 
 try:
     while True:
         tags = input("Введите теги через пробел: ").split()
         if not tags:
             continue
-        file_vector = v.get_set_vector(tags, aggregation_method="mean")
+        file_vector = v.get_set_vector(tags, aggregation_method="mean", weigh=True)
         file_vector.normalize()
         destiny, ids = vdbh.search_nearest(file_vector.value, 5)
         for file_id in ids:

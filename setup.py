@@ -13,6 +13,7 @@ setup(
         "python-magic==0.4.27",
         "scikit-learn==1.5.2",
         "tensorflow==2.17.0",
+        "tqdm==4.67.1",
         "watchdog==6.0.0"
     ],
     classifiers=[

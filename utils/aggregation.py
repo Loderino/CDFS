@@ -4,7 +4,7 @@ from VectorHandle.vector import Vector
 
 
 def weighted_mean(vectors: list[Vector], weights) -> Vector:
-    print(weights)
+    # print(weights)
     weighted_sum = np.zeros_like(vectors[0].value)
     for i, vector in enumerate(vectors):
         weighted_sum += vector.value * weights[i]

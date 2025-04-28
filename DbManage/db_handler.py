@@ -68,7 +68,31 @@ class DBHandler:
         file_id = File.select(File.id).where(File.full_path == old_path).get().id
         File.update(full_path=new_path).where(File.full_path == old_path).execute()
         return file_id
+    
+    def update_file_tags(self, tags, file_id=None, file_path=None):
+        if file_id:
+            File.update(tags=tags).where(File.id == file_id).execute()
+        elif file_path:
+            File.update(tags=tags).where(File.full_path == file_path).execute()
 
+    def get_file_tags(self, file_id) -> list:
+        return File.select(File.tags).where(File.id == file_id).get().tags
+
+    def get_id_by_filepath(self, file_path: str) -> int | None:
+        """
+        Retrieves the file id from the database by file path.
+
+        Args:
+            file_path (str): The absolute path of the file.
+
+        Returns:
+            id | None: The ID of the file if it exists, otherwise None.
+        """
+        try:
+            return File.select(File.id).where(File.full_path == file_path).get().id
+        except File.DoesNotExist:
+            return None
+        
     def get_filepath_by_id(self, file_id: int) -> str | None:
         """
         Retrieves the file path from the database by file ID.

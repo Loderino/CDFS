@@ -45,7 +45,6 @@ def update():
 
             path = item['path']
             tags = item['tags']
-            print("path", path, tags)
             update_tags(path, tags)
         return jsonify({'success': True})
     except Exception as e:

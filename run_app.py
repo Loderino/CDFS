@@ -1,7 +1,7 @@
 from tqdm import tqdm
 from threading import Thread
 from frontend import launch_frontend
-from handlers import fw, handle_new_file
+from handlers import fw, handle_new_file, stop
 
 try:
     api_thread = Thread(name="API", target=launch_frontend)
@@ -11,3 +11,4 @@ try:
         handle_new_file(file)
 except KeyboardInterrupt:
     api_thread.join()
+    stop()

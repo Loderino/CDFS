@@ -17,6 +17,8 @@ vdbh = VDBHandler()
 v = Vectorizer()
 tagger = Tagger()
 
+def stop():
+    vdbh.__del__()
 
 def handle_new_file(path) -> None:
     """
@@ -30,7 +32,7 @@ def handle_new_file(path) -> None:
         print(f"запись о файле {path} создана с id {file_id}")
         tags = tagger.generate_desc(path)
         dbh.update_file_tags(tags, file_id=file_id)
-        file_vector = v.get_set_vector(tags, aggregation_method="mean")
+        file_vector = v.get_set_vector(tags, aggregation_method="mean", weigh=True)
         file_vector.normalize()
         vdbh.add_vector(file_id, file_vector.value)
 
@@ -105,6 +107,8 @@ def vector_search(query: str, limit: int) -> list[dict] | None:
     return result
 
 def update_tags(file_path: str, tags: list):
+    if not tags:
+        raise ValueError("Изображению должен соответствовать хотя бы 1 тег.")
     file_id = dbh.get_id_by_filepath(file_path)
     if file_id is None:
         return False
